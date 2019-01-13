@@ -51,6 +51,6 @@ Region, Wine Variety, Price and rating. These filters will be interactive and it
 your wine. The app will also feature a world map to show where the orgin of your wine is. It willalso include a wine dataset 
 so that potential buyers can see, which wine are popular and being procuded and sold more often.
 
-
+![](Hellowine.png)
 
 
