@@ -10,4 +10,13 @@ sum(is.na(data$price)) #8992 NA
 sum(is.na(data$region_1)) #no NA 
 sum(is.na(data$points)) # no NA
 clean_data<-clean_data %>% filter(price != "")
+clean_data<-clean_data %>% filter(region_1 != "")
+
+clean_data<- clean_data %>% mutate(price_points_ratio = price / points)
+
+# to use map the average price_points_ratio VS country 
+ratio_country<-clean_data %>% 
+  select(country,price_points_ratio) %>% 
+  group_by(country) %>%  
+  summarise(avg = mean(price_points_ratio))
 
