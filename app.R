@@ -10,6 +10,7 @@
 library(shiny)
 library(tidyverse)
 library(ggplot2)
+library(plotly)
 clean_data<-read.csv("data/clean_data.csv")
 
 country<- as.factor(unique(clean_data$country))
@@ -47,7 +48,9 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
            
-           #plotlyOutput("price_hist")
+           plotlyOutput("scatplot_price"),
+           plotlyOutput("scatplot_points"),
+           plotlyOutput("points_price")
         )
     )
 )
@@ -70,6 +73,32 @@ server <- function(input, output,session) {
                                  filter(province %in% input$province) %>% 
                                  distinct(region_1))
     }) 
+    
+    wines_filter<-reactive(
+        clean_data %>% filter(
+            country %in% input$country,
+            province %in% input$province,
+            region_1 %in% input$region
+        )
+    )
+    
+    output$scatplot_price <-renderPlotly({
+        p1<-ggplot(wines_filter(), aes(x = price)) +
+            geom_density()
+        p1
+    })
+    
+    output$scatplot_points<-renderPlotly({
+        p2<-ggplot(wines_filter(),aes(x = points))+
+            geom_bar()
+        ggplotly(p2)
+    })
+    
+    output$points_price<-renderPlotly({
+        p3<-ggplot(wines_filter(),aes(x=points, y=price))+
+            geom_jitter(aes(text=title),alpha=0.3)
+        ggplotly(p3)
+    })
 }
 
 # Run the application 
