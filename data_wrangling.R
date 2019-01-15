@@ -14,9 +14,12 @@ clean_data<-clean_data %>% filter(region_1 != "")
 
 clean_data<- clean_data %>% mutate(price_points_ratio = price / points)
 
+write.csv(clean_data,file = "clean_data.csv")
+
 # to use map the average price_points_ratio VS country 
 ratio_country<-clean_data %>% 
   select(country,price_points_ratio) %>% 
   group_by(country) %>%  
   summarise(avg = mean(price_points_ratio))
 
+write.csv(ratio_country,file= "ratio_country.csv")
