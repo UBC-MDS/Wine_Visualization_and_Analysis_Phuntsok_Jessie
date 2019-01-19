@@ -41,7 +41,9 @@ ui <- fluidPage(
             selectizeInput("region",
                         label = "Select your desired region",
                         choices = NULL,
-                        multiple = TRUE)
+                        multiple = TRUE),
+            sliderInput("priceInput", "Price",0, 100,c(25,40), pre = "$")
+          
             
         ),
 
