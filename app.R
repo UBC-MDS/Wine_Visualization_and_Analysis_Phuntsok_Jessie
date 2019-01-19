@@ -32,7 +32,8 @@ ui <- fluidPage(
             selectizeInput("country",
                         label = "Select your desired country",
                         choices = country,
-                        multiple = TRUE
+                        multiple = TRUE,
+                        selected='Canada'
                         ),
             selectizeInput("province",
                         label = "Select your desired province",
@@ -65,7 +66,7 @@ server <- function(input, output,session) {
         updateSelectizeInput(session,'province',
                              choices = clean_data %>% 
                                  filter(country %in% input$country) %>% 
-                                 distinct(province))
+                                 distinct(province), selected='British Columbia')
     }) 
     
     # change region based on province 
@@ -73,7 +74,7 @@ server <- function(input, output,session) {
         updateSelectizeInput(session,'region',
                              choices = clean_data %>% 
                                  filter(province %in% input$province) %>% 
-                                 distinct(region_1))
+                                 distinct(region_1), selected='Okanagan Valley')
     }) 
     
     wines_filter<-reactive(
@@ -85,9 +86,9 @@ server <- function(input, output,session) {
     )
     
     output$scatplot_price <-renderPlotly({
-        p1<-ggplot(wines_filter(), aes(x = price)) +
-            geom_density()
-        p1
+        p1<-ggplot(wines_filter(), aes(x = price,y= fct_reorder( variety,price))) +
+            geom_point(aes(text=title))+ggtitle("price VS variety")+labs(y="variety")
+        ggplotly(p1)
     })
     
     output$scatplot_points<-renderPlotly({
