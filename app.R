@@ -11,6 +11,7 @@ library(shiny)
 library(tidyverse)
 library(ggplot2)
 library(plotly)
+
 clean_data<-read.csv("data/clean_data.csv")
 
 country<- as.factor(unique(clean_data$country))
@@ -21,87 +22,99 @@ country<- as.factor(unique(clean_data$country))
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-
-    # Application title
-    titlePanel("Hello Wine App",
-               windowTitle = "Wine app"),
-
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            selectizeInput("country",
-                        label = "Select your desired country",
-                        choices = country,
-                        multiple = TRUE,
-                        selected='Canada'
-                        ),
-            selectizeInput("province",
-                        label = "Select your desired province",
-                        choices = NULL,
-                        multiple = TRUE),
-            selectizeInput("region",
-                        label = "Select your desired region",
-                        choices = NULL,
-                        multiple = TRUE),
-            sliderInput("priceInput", "Price",0, 100,c(25,40), pre = "$")
-          
-            
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-           
-           plotlyOutput("scatplot_price"),
-           plotlyOutput("scatplot_points"),
-           plotlyOutput("points_price")
-        )
+  
+  # Application title
+  
+  titlePanel("Hello Wine App",
+            windowTitle = "Wine app"),
+  
+  
+  # Sidebar with a slider input for number of bins 
+  sidebarLayout(
+    sidebarPanel(
+      selectizeInput("country",
+                     label = "Select your desired country",
+                     choices = country,
+                     multiple = TRUE,
+                     selected='Canada'
+      ),
+      selectizeInput("province",
+                     label = "Select your desired province",
+                     choices = NULL,
+                     multiple = TRUE),
+      selectizeInput("region",
+                     label = "Select your desired region",
+                     choices = NULL,
+                     multiple = TRUE),
+      sliderInput("priceInput", "Price",0, 100,c(25,40), pre = "$"),
+      sliderInput("points", "Points",0, 100, c(25,40), pre = "")
+      
+    ),
+    
+    # Show a plot of the generated distribution
+    mainPanel(
+      tabsetPanel(type = "tabs",
+                  tabPanel("Summary", verbatimTextOutput("summary")),
+                  tabPanel("Table", tableOutput("table")),
+                        plotlyOutput("scatplot_price"),
+                          plotlyOutput("scatplot_points"),
+                            plotlyOutput("points_price"),
+                  
+                  tabPanel("plot", plotOutput("plot")))
+                  
+                  
+                 
+      
+      
     )
+  )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output,session) {
-
-    # change province choices based on country
-    observeEvent(input$country,{
-        updateSelectizeInput(session,'province',
-                             choices = clean_data %>% 
-                                 filter(country %in% input$country) %>% 
-                                 distinct(province), selected='British Columbia')
-    }) 
-    
-    # change region based on province 
-    observeEvent(input$province,{
-        updateSelectizeInput(session,'region',
-                             choices = clean_data %>% 
-                                 filter(province %in% input$province) %>% 
-                                 distinct(region_1), selected='Okanagan Valley')
-    }) 
-    
-    wines_filter<-reactive(
-        clean_data %>% filter(
-            country %in% input$country,
-            province %in% input$province,
-            region_1 %in% input$region
-        )
+  
+  # change province choices based on country
+  observeEvent(input$country,{
+    updateSelectizeInput(session,'province',
+                         choices = clean_data %>% 
+                           filter(country %in% input$country) %>% 
+                           distinct(province), selected='British Columbia')
+  }) 
+  
+  # change region based on province 
+  observeEvent(input$province,{
+    updateSelectizeInput(session,'region',
+                         choices = clean_data %>% 
+                           filter(province %in% input$province) %>% 
+                           distinct(region_1), selected='Okanagan Valley')
+  }) 
+  
+  wines_filter<-reactive(
+    clean_data %>% filter(
+      country %in% input$country,
+      province %in% input$province,
+      region_1 %in% input$region,
+      price %in% input$priceInput
     )
-    
-    output$scatplot_price <-renderPlotly({
-        p1<-ggplot(wines_filter(), aes(x = price,y= fct_reorder( variety,price))) +
-            geom_point(aes(text=title))+ggtitle("price VS variety")+labs(y="variety")
-        ggplotly(p1)
-    })
-    
-    output$scatplot_points<-renderPlotly({
-        p2<-ggplot(wines_filter(),aes(x = points))+
-            geom_bar()
-        ggplotly(p2)
-    })
-    
-    output$points_price<-renderPlotly({
-        p3<-ggplot(wines_filter(),aes(x=points, y=price))+
-            geom_jitter(aes(text=title),alpha=0.3)
-        ggplotly(p3)
-    })
+  )
+  
+  output$scatplot_price <-renderPlotly({
+    p1<-ggplot(wines_filter(), aes(x = price ,y= fct_reorder( variety,price),colour=price)) +
+      geom_point(aes(text=title))+ggtitle("price VS variety")+labs(y="variety")
+    ggplotly(p1)
+  })
+  
+  output$scatplot_points<-renderPlotly({
+    p2<-ggplot(wines_filter(),aes(x = points))+
+      geom_bar()
+    ggplotly(p2)
+  })
+  
+  output$points_price<-renderPlotly({
+    p3<-ggplot(wines_filter(),aes(x=points, y=price, colour=price))+
+      geom_jitter(aes(text=title),alpha=0.3)
+    ggplotly(p3)
+  })
 }
 
 # Run the application 
