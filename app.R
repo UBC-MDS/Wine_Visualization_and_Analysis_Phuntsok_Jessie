@@ -26,7 +26,7 @@ ui <- fluidPage(
   # Application title
   
   titlePanel("Hello Wine App",
-            windowTitle = "Wine app"),
+             windowTitle = "Wine app"),
   
   
   # Sidebar with a slider input for number of bins 
@@ -56,14 +56,14 @@ ui <- fluidPage(
       tabsetPanel(type = "tabs",
                   tabPanel("Summary", verbatimTextOutput("summary")),
                   tabPanel("Table", tableOutput("table")),
-                        plotlyOutput("scatplot_price"),
-                          plotlyOutput("scatplot_points"),
-                            plotlyOutput("points_price"),
+                  plotlyOutput("scatplot_price"),
+                  plotlyOutput("scatplot_points"),
+                  plotlyOutput("points_price"),
                   
                   tabPanel("plot", plotOutput("plot")))
-                  
-                  
-                 
+      
+      
+      
       
       
     )
@@ -111,26 +111,30 @@ server <- function(input, output,session) {
   
   
   output$scatplot_price <-renderPlotly({
-   # wines_filter$variety<-factor(wines_filter$variety, levels = rev(levels(wines_filter$variety)))
-    p1<-ggplot(wines_filter(), aes(x = price ,y= fct_reorder( variety,price),colour = variety) )+
+    p1<-ggplot(wines_filter(), aes(x = price ,y= fct_reorder( variety,price),colour=variety)) +
       geom_point(aes(text=title))+ggtitle("price VS variety")+labs(y="variety")
+     # facet_wrap(~ variety, scales="free") 
     ggplotly(p1)
   })
   
   output$scatplot_points<-renderPlotly({
-    p2<-ggplot(wines_filter(), aes(x = points ,y= fct_reorder( variety,points),colour=variety)) +
+    p2<-ggplot(wines_filter(), aes(x = points ,y= fct_reorder( variety,price),colour=points)) +
       geom_point(aes(text=title))+ggtitle("points VS variety")+labs(y="variety")
-    ggplotly(p2)
-    #p2<-ggplot(wines_filter(),aes(x = points))+
-      #geom_bar()
-    #ggplotly(p2)
+
   })
   
   output$points_price<-renderPlotly({
     p3<-ggplot(wines_filter(),aes(x=points, y=price, colour=variety))+
       geom_jitter(aes(text=variety),alpha=1)
     ggplotly(p3)
+    
   })
+  output$points_price<-renderPlotly({
+    p4<-ggplot(wines_filter(),aes(factor(price),points),alpha=0.3)
+    p4 + geom_violin(aes(fill = "points"),trim = FALSE)+
+      geom_jitter()
+  })
+  
 }
 
 # Run the application 
