@@ -111,7 +111,10 @@ server <- function(input, output,session) {
   
   
   output$scatplot_price <-renderPlotly({
+<<<<<<< HEAD
 
+=======
+>>>>>>> 420eef151b1790848e20887ae3b05a1997342529
     p1<-ggplot(wines_filter(), aes(x = price ,y= fct_reorder( variety,price),colour=variety)) +
       geom_point(aes(text=title))+ggtitle("price VS variety")+labs(y="variety")
      # facet_wrap(~ variety, scales="free") 
@@ -121,6 +124,10 @@ server <- function(input, output,session) {
   output$scatplot_points<-renderPlotly({
     p2<-ggplot(wines_filter(), aes(x = points ,y= fct_reorder( variety,price),colour=points)) +
       geom_point(aes(text=title))+ggtitle("points VS variety")+labs(y="variety")
+<<<<<<< HEAD
+=======
+
+>>>>>>> 420eef151b1790848e20887ae3b05a1997342529
   })
   
   output$points_price<-renderPlotly({
