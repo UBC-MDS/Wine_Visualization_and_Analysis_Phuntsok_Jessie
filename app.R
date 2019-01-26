@@ -11,6 +11,7 @@ library(shiny)
 library(tidyverse)
 library(ggplot2)
 library(plotly)
+library(DT)
 
 clean_data<-read.csv("data/clean_data.csv")
 
@@ -54,13 +55,13 @@ ui <- fluidPage(
     # Show a plot of the generated distribution
     mainPanel(
       tabsetPanel(type = "tabs",
-                  tabPanel("Summary", verbatimTextOutput("summary")),
-                  tabPanel("Table", tableOutput("table")),
-                  plotlyOutput("scatplot_price"),
-                  plotlyOutput("scatplot_points"),
-                  plotlyOutput("points_price"),
                   
-                  tabPanel("plot", plotOutput("plot")))
+                  tabPanel("plot",fluidRow(plotlyOutput("scatplot_price"),
+                                           plotlyOutput("scatplot_points"),
+                                           plotlyOutput("points_price")) ),
+                  tabPanel("Table", dataTableOutput("table")))
+                  
+                  
       
       
       
@@ -89,6 +90,24 @@ server <- function(input, output,session) {
                            distinct(region_1), selected='Okanagan Valley')
   }) 
   
+  # Dataset table 
+  
+  wine_df <- reactive(
+    {
+      clean_data %>% filter(
+        country %in% input$country,
+        province %in% input$province,
+        region_1 %in% input$region,
+        price <= input$priceInput[2] & price >= input$priceInput[1]
+      ) %>% select(country,province,region_1,price,points)
+    }
+  )
+  
+  
+  
+  
+  
+  # Generate all outputs 
   wines_filter<-reactive(
     if(is.null(input$province)&
        is.null(input$region)){
@@ -118,22 +137,26 @@ server <- function(input, output,session) {
   })
   
   output$scatplot_points<-renderPlotly({
-    p2<-ggplot(wines_filter(), aes(x = points ,y= fct_reorder( variety,price),colour=points)) +
+    p2<-ggplot(wines_filter(), aes(x = points ,y= fct_reorder( variety,points),colour=points)) +
       geom_point(aes(text=title))+ggtitle("points VS variety")+labs(y="variety")
 
   })
   
   output$points_price<-renderPlotly({
-    p3<-ggplot(wines_filter(),aes(x=points, y=price, colour=variety))+
-      geom_jitter(aes(text=variety),alpha=1)
+    p3<-ggplot(wines_filter(),aes(x=points,y=price,colour=variety),alpha=0.3)+
+      geom_point()
     ggplotly(p3)
     
   })
-  output$points_price<-renderPlotly({
-    p4<-ggplot(wines_filter(),aes(factor(price),points),alpha=0.3)
-    p4 + geom_violin(aes(fill = "points"),trim = FALSE)+
-      geom_jitter()
-  })
+  
+  
+  #Dataset 
+  output$table<-DT::renderDataTable(
+    {
+      DT::datatable(wine_df(),options = list(lengthMenu = c(30,50,100),pageLength = 10))
+    }
+  )
+  
   
 }
 
