@@ -47,7 +47,7 @@ ui <- fluidPage(
                      choices = NULL,
                      multiple = TRUE),
       sliderInput("priceInput", "Price",0, 100,c(25,40), pre = "$"),
-      sliderInput("points", "Points",0, 100, c(25,40), pre = "")
+      sliderInput("points", "points",0, 100, c(80,100), pre = "")
       
     ),
     
@@ -90,13 +90,25 @@ server <- function(input, output,session) {
   }) 
   
   wines_filter<-reactive(
+    if(is.null(input$province)&
+       is.null(input$region)){
+      clean_data %>% filter(country%in% input$country,
+                            price%in%input$priceInput
+                            )
+    }else if (is.null(input$region)){
+      clean_data %>% filter(country%in% input$country,
+                            province %in% input$province,
+                            price%in%input$priceInput
+                            )
+    }else{
     clean_data %>% filter(
       country %in% input$country,
       province %in% input$province,
       region_1 %in% input$region,
       price %in% input$priceInput
+      )}
     )
-  )
+  
   
   output$scatplot_price <-renderPlotly({
     p1<-ggplot(wines_filter(), aes(x = price ,y= fct_reorder( variety,price),colour=variety)) +
@@ -108,11 +120,12 @@ server <- function(input, output,session) {
   output$scatplot_points<-renderPlotly({
     p2<-ggplot(wines_filter(), aes(x = points ,y= fct_reorder( variety,price),colour=points)) +
       geom_point(aes(text=title))+ggtitle("points VS variety")+labs(y="variety")
+
   })
   
   output$points_price<-renderPlotly({
-    p3<-ggplot(wines_filter(),aes(x=points, y=price, colour=price))+
-      geom_jitter(aes(text=title),alpha=0.3)
+    p3<-ggplot(wines_filter(),aes(x=points, y=price, colour=variety))+
+      geom_jitter(aes(text=variety),alpha=1)
     ggplotly(p3)
     
   })
