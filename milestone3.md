@@ -17,10 +17,10 @@ Summary of feedbacks we received from out peers:
 
 Actions taken on the feedback:
 -------------------------------------
-- Some of our peers pointed out that some of our graphs were redundant. So we talked to the lecture instructor Cydney, lab instructor Vincenzo and out teaching assistant Sahir, and all of them recommended getting rid of two of our three graphs by combining the three graphs into one graph and also adding a violin plot.
+- Some of our peers pointed out that some of our graphs were redundant. So we talked to the lecture instructor Cydney, lab instructor Vincenzo and out teaching assistant Sahir, and all of them recommended getting rid of the scatter plots and  adding a violin plot and histogram.
 - Our first graph had bugs in them and also the legend was redundant, so removing it would take care of the issue
 - We also made an improvement on our filters so that the subfilters don't disappear when you change your parent filters.
-- Combining 3 graphs into 1, would also take care of the color redundancy in our scatterplot.
+- we created a violin plot to show the price and points distribution of wine and also created two histograms.
 - Last time, our data tabs and our summary tabs were empty, and this time we will be adding a short summary of our app under the summary tab, and also include the wine data table under the data tab.
 
     
