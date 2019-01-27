@@ -126,20 +126,20 @@ server <- function(input, output,session) {
       region_1 %in% input$region,
       price %in% input$priceInput
       )}
-    )
+  )
   
   
   output$scatplot_price <-renderPlotly({
-    p1<-ggplot(wines_filter(), aes(x = price ,y= fct_reorder( variety,price),colour=variety)) +
-      geom_point(aes(text=title))+ggtitle("price VS variety")+labs(y="variety")
-     # facet_wrap(~ variety, scales="free") 
+    p1<-ggplot(wines_filter(), aes(x = price ,y=  variety,colour=variety)) +
+      geom_point(aes(text=title))+ggtitle("price VS variety")
+    # facet_wrap(~ variety, scales="free") 
     ggplotly(p1)
   })
   
   output$scatplot_points<-renderPlotly({
     p2<-ggplot(wines_filter(), aes(x = points ,y= fct_reorder( variety,points),colour=points)) +
       geom_point(aes(text=title))+ggtitle("points VS variety")+labs(y="variety")
-
+    
   })
   
   output$points_price<-renderPlotly({
@@ -147,6 +147,17 @@ server <- function(input, output,session) {
       geom_point()
     ggplotly(p3)
     
+  })
+    
+  
+  output$points_price<-renderPlotly({
+      ggplot(wines_filter(),aes(x=price,y=points,colour=variety))+
+      geom_violin(alpha = 0.3, draw_quantiles = c(0.25,0.5,0.75)) +
+      geom_jitter(width = 0.2, height = 0, alpha = 0.3) +
+      labs(x= "Price", y = "Points", colour = "Variety",
+           title = "Price Points distribution by variety")
+    
+  
   })
   
   
