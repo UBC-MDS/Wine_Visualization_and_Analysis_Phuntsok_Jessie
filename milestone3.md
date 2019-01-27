@@ -1,7 +1,7 @@
 Reflections on Feedback Received
 ===============================
 
-Summary of feedbacks we received from out peers:
+Summary of feedbacks we received from our peers:
 -------------------------------------------------------------
 -Changing the titles of the plots 
 -Perhaps fliping the “variety” and “points” axis on one of the plots
