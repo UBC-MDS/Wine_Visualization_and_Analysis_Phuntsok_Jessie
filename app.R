@@ -153,7 +153,7 @@ server <- function(input, output,session) {
   output$points_price<-renderPlotly({
       ggplot(wines_filter(),aes(x=price,y=points,colour=variety))+
       geom_violin(alpha = 0.3, draw_quantiles = c(0.25,0.5,0.75)) +
-      geom_jitter(width = 0.2, height = 0, alpha = 0.3) +
+      #geom_jitter(width = 0.2, height = 0, alpha = 0.3) +
       labs(x= "Price", y = "Points", colour = "Variety",
            title = "Price Points distribution by variety")
     
@@ -170,6 +170,8 @@ server <- function(input, output,session) {
   
   
 }
+
+
 
 # Run the application 
 shinyApp(ui = ui, server = server)
