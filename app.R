@@ -87,13 +87,16 @@ ui <- fluidPage(
                            
                            ),
                   tabPanel("plot",fluidRow(plotlyOutput("points_price"),
+
                                            splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("scatplot_price"), plotlyOutput("scatplot_points"))
                                           
                                       
                                            ) ),
+
+                                          
                   tabPanel("Table", dataTableOutput("table")))
-                  
-                  
+      
+      
       
       
       
@@ -145,18 +148,18 @@ server <- function(input, output,session) {
        is.null(input$region)){
       clean_data %>% filter(country%in% input$country,
                             price <= input$priceInput[2] & price >= input$priceInput[1]
-                            )
+      )
     }else if (is.null(input$region)){
       clean_data %>% filter(country%in% input$country,
                             province %in% input$province,
                             price <= input$priceInput[2] & price >= input$priceInput[1]
-                            )
+      )
     }else{
-    clean_data %>% filter(
-      country %in% input$country,
-      province %in% input$province,
-      region_1 %in% input$region,
-      price <= input$priceInput[2] & price >= input$priceInput[1]
+      clean_data %>% filter(
+        country %in% input$country,
+        province %in% input$province,
+        region_1 %in% input$region,
+        price <= input$priceInput[2] & price >= input$priceInput[1]
       )}
   )
   
@@ -188,9 +191,9 @@ server <- function(input, output,session) {
     
   })
   
-
   
- 
+  
+  
   
   
   #Dataset 
