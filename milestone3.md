@@ -21,8 +21,12 @@ Actions taken on the feedback:
 - Our first graph had bugs in them and also the legend was redundant, so removing it would take care of the issue
 - We also made an improvement on our filters so that the subfilters don't disappear when you change your parent filters.
 - we created a violin plot to show the price and points distribution of wine and also created two histograms.
+<<<<<<< HEAD
 - Last time, our data tab was empty, and this time we have added the wine data under the data tab.
 
+=======
+- Last time, our data tab was  empty, and this time we have aded a data table under the data tab.
+>>>>>>> 84be4a5896aec83a8ddfa0149ba5ff1db1144c98
     
 Vision & Next Steps:
 ------------------------
