@@ -77,7 +77,7 @@ ui <- fluidPage(
                            span("Developers:",
                                 tags$a(href="https://github.com/jielinyu","Jessie Yu"),
                                 "and",
-                                tags$a(href="https://github.com/phuntsoktseten","Phuntsoktseten"))
+                                tags$a(href="https://github.com/phuntsoktseten","Phuntsok Tseten"))
                            
 
                            
@@ -175,7 +175,11 @@ server <- function(input, output,session) {
   # second price histogram
   output$scatplot_price <-renderPlotly({
     p1<-ggplot(wines_filter(), aes(x = price,fill=)) +
-      geom_histogram(colour="black", fill="brown2")+ggtitle("price distribution")+
+      geom_histogram(binwidth = 1, aes(fill = ..count..))+
+     # scale_fill_brewer(palette = "Set1")
+      ggtitle("price distribution")+
+      
+      #geom_histogram(colour="black", fill="brown2")+ggtitle("price distribution")+
       theme_bw()+
       geom_density(alpha=.2, fill="#FF6666")
     ggplotly(p1)
@@ -184,7 +188,8 @@ server <- function(input, output,session) {
   # third points histogram
   output$scatplot_points<-renderPlotly({
     p2<-ggplot(wines_filter(), aes(x = points)) +
-      geom_histogram(colour="black",fill="orange2")+ggtitle("points distribution")+
+      geom_histogram(binwidth = 0.8, aes(fill = ..count..))+
+      ggtitle("points distribution")+
       theme_bw()
     
   })
