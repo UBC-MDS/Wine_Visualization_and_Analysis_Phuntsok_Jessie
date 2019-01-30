@@ -17,7 +17,7 @@ We believe these are the best changes to implement as we can do all of the chang
 
 ## If you were to make the app again from scratch (or some other app in general), what would you do differently?
 
-We would make better use of features in the data set. In the data set, there are reviews of testers for each different wines. We would use Word Cloud to provide a user with insight into word use within reviews. By emulating testers' review, users can gain more information about different varieties and are able to find their desired wines more exactly. 
+We would make better use of features in the data set. In the data set, there are reviews of testers for each different wines. We would use Word Cloud to provide a user with insight into word use within reviews. By emulating testers' review, users can gain more information about different varieties and are able to find their desired wines more exactly. <br>
 Additionally, we would be more deliberate to choose the types of graphs and make decisions earlier on which graphs to use for our app. We went back and forth to decide what kinds of plot to present the data, though we already have our objectives at the early stage.  
 
 ## What were the greatest challenges you faced in creating the final product?
