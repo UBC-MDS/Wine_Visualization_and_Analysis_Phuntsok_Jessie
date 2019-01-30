@@ -12,17 +12,26 @@ library(tidyverse)
 library(ggplot2)
 library(plotly)
 library(DT)
+library(shinythemes)
 
+#Loading data 
 clean_data<-read.csv("data/clean_data.csv")
 
 country<- as.factor(unique(clean_data$country))
-#province<-unique(clean_data$province)
-#region<-unique(clean_data$region_1)
-#price<-as.numeric(clean_data$price)
-#points<-as.numeric(clean_data$points)
+
+#Intro text 
+introduction<-"<h3>Introduction</h3>
+<p> Hello Wine! Here is the best place for you to explore wordly wine. Please select your desired wine's country, province or region. You will see each variety's price and ratings. Moreover, you can see in different areas, price and ratings' distribution. Enjoy!</p>
+
+
+
+"
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
+  
+  # application theme 
+  theme = shinytheme("sandstone"),
   
   # Application title
   
@@ -55,10 +64,32 @@ ui <- fluidPage(
     # Show a plot of the generated distribution
     mainPanel(
       tabsetPanel(type = "tabs",
-                  
+                  tabPanel("Summary",
+                           br(),
+                           "Hello Wine! Here is the best place for you to explore wordly wine.", br(),
+                           "Please select your desired wine's country, province or region and adjusted your desired prices and ratings range.",
+                           br(),
+                           "You will see each variety's price and ratings.",
+                           br(),
+                           "Moreover, you can see in different areas, price and ratings' distribution. Enjoy!",
+                           br(),br(),
+                           span("Github Repository:",
+                                tags$a(href="https://github.com/UBC-MDS/Wine_Visualization_and_Analysis_Phuntsok_Jessie","Wine_repo")),
+                           br(),
+                           span("Developers:",
+                                tags$a(href="https://github.com/jielinyu","Jessie Yu"),
+                                "and",
+                                tags$a(href="https://github.com/phuntsoktseten","Phuntsoktseten"))
+                           
+
+                           
+                           
+                           
+                           ),
                   tabPanel("plot",fluidRow(plotlyOutput("points_price"),
-                                           plotlyOutput("scatplot_price"),
-                                           plotlyOutput("scatplot_points")
+                                           splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("scatplot_price"), plotlyOutput("scatplot_points"))
+                                          
+                                      
                                            ) ),
                   tabPanel("Table", dataTableOutput("table")))
                   
@@ -129,26 +160,30 @@ server <- function(input, output,session) {
       )}
   )
   
+  output$description<-renderText({
+    HTML(introduction)
+  })
+  
   output$points_price<-renderPlotly({
     p3<-ggplot(wines_filter(),aes(x=price,y=points,colour=variety))+
       geom_violin(alpha = 0.5, draw_quantiles = c(0.25,0.5,0.75)) +
       labs(x= "Price", y = "Points", colour = "Variety",
-           title = "Price Points distribution by variety")
+           title = "Price Points distribution by variety")+theme_bw()
     ggplotly(p3)
     
   })
   
   output$scatplot_price <-renderPlotly({
-    p1<-ggplot(wines_filter(), aes(x = price)) +
-      geom_histogram()+ggtitle("price distribution")+
-      theme_bw()
-    # facet_wrap(~ variety, scales="free") 
+    p1<-ggplot(wines_filter(), aes(x = price,fill=)) +
+      geom_histogram(colour="black", fill="brown2")+ggtitle("price distribution")+
+      theme_bw()+
+      geom_density(alpha=.2, fill="#FF6666")
     ggplotly(p1)
   })
   
   output$scatplot_points<-renderPlotly({
     p2<-ggplot(wines_filter(), aes(x = points)) +
-      geom_histogram()+ggtitle("points distribution")+
+      geom_histogram(colour="black",fill="orange2")+ggtitle("points distribution")+
       theme_bw()
     
   })
