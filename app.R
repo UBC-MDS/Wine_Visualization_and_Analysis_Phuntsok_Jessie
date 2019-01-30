@@ -19,15 +19,8 @@ clean_data<-read.csv("data/clean_data.csv")
 
 country<- as.factor(unique(clean_data$country))
 
-#Intro text 
-introduction<-"<h3>Introduction</h3>
-<p> Hello Wine! Here is the best place for you to explore wordly wine. Please select your desired wine's country, province or region. You will see each variety's price and ratings. Moreover, you can see in different areas, price and ratings' distribution. Enjoy!</p>
 
-
-
-"
-
-# Define UI for application that draws a histogram
+# Define UI for application 
 ui <- fluidPage(
   
   # application theme 
@@ -39,23 +32,28 @@ ui <- fluidPage(
              windowTitle = "Wine app"),
   
   
-  # Sidebar with a slider input for number of bins 
+  # Sidebar with a slider input  
   sidebarLayout(
     sidebarPanel(
+      # Input country, default selecting is "Canada" 
       selectizeInput("country",
                      label = "Select your desired country",
                      choices = country,
                      multiple = TRUE,
                      selected='Canada'
       ),
+      
+      # Input province 
       selectizeInput("province",
                      label = "Select your desired province",
                      choices = NULL,
                      multiple = TRUE),
+      # Input regrion 
       selectizeInput("region",
                      label = "Select your desired region",
                      choices = NULL,
                      multiple = TRUE),
+      # Input price and points
       sliderInput("priceInput", "Price",0, 100,c(25,40), pre = "$"),
       sliderInput("points", "points",0, 100, c(80,100), pre = "")
       
@@ -106,7 +104,7 @@ ui <- fluidPage(
   )
 )
 
-# Define server logic required to draw a histogram
+# Define server logic 
 server <- function(input, output,session) {
   
   # change province choices based on country
@@ -163,10 +161,8 @@ server <- function(input, output,session) {
       )}
   )
   
-  output$description<-renderText({
-    HTML(introduction)
-  })
-  
+
+  # First violin plot 
   output$points_price<-renderPlotly({
     p3<-ggplot(wines_filter(),aes(x=price,y=points,colour=variety))+
       geom_violin(alpha = 0.5, draw_quantiles = c(0.25,0.5,0.75)) +
@@ -176,6 +172,7 @@ server <- function(input, output,session) {
     
   })
   
+  # second price histogram
   output$scatplot_price <-renderPlotly({
     p1<-ggplot(wines_filter(), aes(x = price,fill=)) +
       geom_histogram(colour="black", fill="brown2")+ggtitle("price distribution")+
@@ -184,6 +181,7 @@ server <- function(input, output,session) {
     ggplotly(p1)
   })
   
+  # third points histogram
   output$scatplot_points<-renderPlotly({
     p2<-ggplot(wines_filter(), aes(x = points)) +
       geom_histogram(colour="black",fill="orange2")+ggtitle("points distribution")+
